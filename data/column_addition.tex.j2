@@ -1,0 +1,96 @@
+\documentclass[dvipdfmx]{jsarticle}
+
+\usepackage{xcolor}
+\usepackage[top=3cm, bottom=5cm, left=2cm, right=2cm]{geometry}
+
+\usepackage{tasks}
+\settasks{
+  label=(\arabic*),
+  label-width=4em,
+  after-item-skip=5\baselineskip,
+  after-skip=5\baselineskip,
+  item-indent=46pt
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\LARGE \textgt{ {{title}} } }
+\fancyhead[R]{\LARGE \underline{\textgt{ {{name}}: } \hspace{70mm}}}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\headheight}{25pt}
+\setlength{\headsep}{40pt}
+
+{# --- Jinja2 Macros --- #}
+{%- macro task_column(digits) -%}
+{{ (42 / (6 + digits * 2)) | int }}
+{%- endmacro -%}
+
+{%- macro table_spec(cnum, align='c') -%}
+{{align * cnum}}
+{%- endmacro -%}
+
+{%- macro expand_num(digits, num, color=None) -%}
+{%- for d in range(digits) -%}
+  {%- if loop.revindex0 >= num.MaxDigit() -%}
+    {{'   '}}
+  {%- else -%}
+    {%- if color -%}
+    \color{{'{'+color+'}'}}
+    {%- endif -%}
+    {{' '}}{{num.GetDigit(loop.revindex0)}}{{' '}}
+  {%- endif -%}
+
+  {%- if not loop.last -%}
+  &
+  {%- endif -%}
+{%- endfor -%}
+{%- endmacro -%}
+
+{%- macro print_column_addition(problem, op, answer=False) -%}
+  {% for num in problem.nums -%}
+    {%- if loop.last -%}
+    {{op + ' '}}
+    {%- else -%}
+    {{'  '}}
+    {%- endif -%}
+    &{{expand_num(digits, num)}}
+    {%- if loop.last -%}
+    \\ \hline
+    {%- else -%}
+    \\
+    {%- endif %}
+  {% endfor -%}
+  {%- if answer -%}
+  {{expand_num(digits+1, problem.answer, 'red')}}
+  {%- endif %}
+{%- endmacro -%}
+
+
+\begin{document}
+\LARGE
+
+\begin{tasks}({{task_column(digits)}})
+  {%- for problem in problems %}
+  \task
+  \begin{tabular}[t]{ {{table_spec(digits+1)}} }
+  {{print_column_addition(problem, op)}}
+  \end{tabular}
+  {% endfor %}
+\end{tasks}
+
+{% if answer %}
+\newpage
+\fancyhead[L]{\LARGE \textgt{ {{title + '\color{red}(Answer)'}} } }
+\begin{tasks}({{task_column(digits)}})
+  {%- for problem in problems %}
+  \task
+  \begin{tabular}[t]{ {{table_spec(digits+1)}} }
+  {{print_column_addition(problem, op, answer)}}
+  \end{tabular}
+  {% endfor %}
+\end{tasks}
+{% endif %}
+
+
+\end{document}
