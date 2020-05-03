@@ -83,7 +83,7 @@ def gen_random_sub(args):
     nums = None
     while True:
         first = ColumnDecimal(random.randrange(min_num, max_num))
-        if first.num == 1:
+        if first.num == min_num:
             continue
 
         nums = [ColumnDecimal(random.randrange(min_num, first.num)) for _ in range(args.num_augend-1)]

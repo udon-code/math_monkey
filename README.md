@@ -2,6 +2,8 @@
 
 筆算問題シート生成プログラム
 
+* 生成済みPDF[ダウンロードページ](https://udon.little-pear.net/column-addition-worksheets)
+
 ## 機能概要
 
 * texフォーマットで出力
@@ -18,6 +20,10 @@
 本プログラムはtexファイルを出力するため、pdfに変換するためには
 Tex環境のインストールが必要です。
 おすすめは[TeX Live](https://texwiki.texjp.org/?TeX%20Live)です。
+
+### 使用Pythonパッケージ
+
+* Jinja2
 
 ## コマンド例
 ### 3桁の足し算問題を100個生成 (桁上がりなし)
